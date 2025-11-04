@@ -1,5 +1,4 @@
-
-# RHO-1: Not All Tokens Are What You Need
+# RHO-1 Not All Tokens Are What You Need
 
 **Paper**: RHO-1: Not All Tokens Are What You Need  
 **Authors**: Zhenghao Lin, Zhibin Gou, Yeyun Gong, Xiao Liu, Yelong Shen, et al. (Microsoft Research)  
@@ -26,17 +25,24 @@ Despite extensive filtering at the document level, high-quality datasets still c
 This raises a critical question: *Can we train language models more efficiently by selectively focusing on the most valuable tokens?*
 
 ### Approach (Selective Language Modeling - SLM)
-RHO-1 introduces **Selective Language Modeling (SLM)** - a novel pretraining approach that:
-1. Trains a reference model on high-quality data
+
+RHO-1 introduces **Selective Language Modeling (SLM)** - a novel pre-training approach that:
+
+1. Trains a reference model on high-quality data (from scratch)
+
+	- **0.5 B math tokens** from the curated **OpenWebMath** dataset for math-domain experiments, or
+	
 2. Scores each token based on excess loss between reference and training models
-3. Selectively applies loss only to high-value tokens during pretraining
+
+3. Selectively applies loss only to high-value tokens during pre-training
 
 ### Key Results
+
 - **Math Performance**: 30% improvement on GSM8k/MATH with 10x fewer tokens
 - **General Tasks**: 6.8% average improvement across 15 benchmarks  
 - **Efficiency**: Matches DeepSeekMath-7B performance using only 3% of tokens (15B vs 500B)
 - **State-of-the-art**: RHO-1-1B achieves 40.6% on MATH (first 1B parameter model to exceed 40%)
-
+![[Screenshot 2025-11-04 at 7.39.24 AM.jpeg]]
 ---
 
 ## Architecture Overview
@@ -44,7 +50,7 @@ RHO-1 introduces **Selective Language Modeling (SLM)** - a novel pretraining app
 ![[Screenshot 2025-11-03 at 7.43.05 PM.png]]
 ### Selective Language Modeling (SLM) Pipeline
 
-```
+``` 
 Algorithm: Selective Language Modeling (SLM)
 
 Input: 
@@ -185,10 +191,10 @@ RHO-1 fundamentally challenges the assumption that all tokens deserve equal trea
 ## Critical Analysis
 
 ### Strengths
+ **Retains Generalizability** (not forgetful): Unlike fine-tuning, can continually pre-train on subject-specific content and see improvements in generalizability and subject-specific assessments. 
  **Empirically Validated**: Strong results across diverse benchmarks  
  **Theoretically Grounded**: Clear mathematical framework with intuitive motivation  
  **Practically Efficient**: Significant computational savings without complex infrastructure  
- **Broadly Applicable**: Works across different model sizes and domains  
 
 ### Limitations and Areas for Improvement
 
@@ -197,16 +203,6 @@ RHO-1 fundamentally challenges the assumption that all tokens deserve equal trea
 
 2. **Fixed Selection Ratio**: Uses static k% throughout training
    - Adaptive selection ratios could further optimize efficiency
-
-3. **Limited to Measurable Tasks**: Best results on tasks with clear correctness metrics (math, code)
-   - Performance on creative or subjective tasks less explored
-
-4. **Token Scoring Overhead**: Computing scores adds computational cost
-   - Could investigate approximation methods or caching strategies
-
-5. **Potential Bias Amplification**: Focusing on "easy" tokens might reinforce existing biases
-   - Needs careful analysis of fairness implications
-
 
 ### Future Research Directions
 - **Multi-granular selection**: Combining token, sentence, and document-level selection
